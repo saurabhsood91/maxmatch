@@ -7,6 +7,32 @@
 
 from sys import argv
 
+def get_cost_sub(source_char, target_char):
+    if source_char == target_char:
+        return 0
+    return 2
+
+def GetMinimumEditDistance(source, target):
+    # get length of source and target
+    n = len(source)
+    m = len(target)
+
+    # create a matrix
+    # initialize the first row and first column
+    D = [[0 for i in range(m+1)] for j in range(n+1)]
+
+    for i in range(1,n+1):
+        D[i][0] = D[i-1][0] + 1
+
+    for j in range(1,m+1):
+        D[0][j] = D[0][j-1] + 1
+
+    # iterate
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            D[i][j] = min(D[i-1][j] + 1, D[i][j-1] + 1, D[i-1][j-1] + 1)
+    return D[n][m]
+
 def MaxMatch(sentence, list_of_words):
     tokens = []
     
@@ -78,3 +104,9 @@ if __name__ == "__main__":
     
     #print list_of_words
     print tokens
+
+    # dummy list of tokens
+    dummy_list = ['the', 'martian']
+
+    # calling the min-edit algorithm on the retrieved tokens and dummy
+    print GetMinimumEditDistance(tokens, dummy_list)
