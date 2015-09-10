@@ -49,30 +49,32 @@ def PopulateListOfWords(filename):
 
 # TODO Command Line arguments handling
 
-filename = argv[1]
-sentence = argv[2]
-
-# Remove the hashtags and convert to lowercase
-sentence = sentence.strip('#').lower()
-
-# This is actually useless at this point of time
-if filename == "" or filename==None:
-    print "Filename missing"
-    print "Syntax: maxmatch filename 'sentence'"
-    exit()
-
-if sentence == "" or sentence == None:
-    print "Sentence missing"
-    print "Syntax: maxmatch filename 'sentence'"
-
-# Get the list of words
-list_of_words = PopulateListOfWords(filename)
-
-# Create a token list
-tokens = []
-
-# run algorithm
-
-tokens = MaxMatch(sentence, list_of_words)
-#print list_of_words
-print tokens
+if __name__ == "__main__":
+    filename = argv[1]
+    sentence = argv[2]
+    
+    # Remove the hashtags and convert to lowercase
+    sentence = sentence.strip('#').lower()
+    
+    # This is actually useless at this point of time
+    if filename == "" or filename==None:
+        print "Filename missing"
+        print "Syntax: maxmatch filename 'sentence'"
+        exit()
+        
+    if sentence == "" or sentence == None:
+        print "Sentence missing"
+        print "Syntax: maxmatch filename 'sentence'"
+        exit()
+        
+    # Get the list of words
+    list_of_words = PopulateListOfWords(filename)
+    
+    # Create a token list
+    tokens = []
+    
+    # run algorithm
+    tokens = MaxMatch(sentence, list_of_words)
+    
+    #print list_of_words
+    print tokens
