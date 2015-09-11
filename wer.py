@@ -1,10 +1,10 @@
 from sys import argv
 from maxmatch import *
 
-def get_cost_sub(source_char, target_char):
-    if source_char == target_char:
+def GetSubCost(source, target):
+    if source == target:
         return 0
-    return 2
+    return 1
 
 def GetMinimumEditDistance(source, target):
     # get length of source and target
@@ -24,7 +24,8 @@ def GetMinimumEditDistance(source, target):
     # iterate
     for i in range(1, n + 1):
         for j in range(1, m + 1):
-            D[i][j] = min(D[i-1][j] + 1, D[i][j-1] + 1, D[i-1][j-1] + 1)
+            D[i][j] = min(D[i-1][j] + 1, D[i][j-1] + 1,  D[i - 1][j - 1] + 
+                    GetSubCost(source[i - 1], target[j - 1]))
     return D[n][m]
 
 def WriteTokens(output_file, tokens):
@@ -47,8 +48,7 @@ def ComputeAverageWER(output_file, ref_file):
             min_edit = GetMinimumEditDistance(matched_output, base_hashtag)
 
             # Compute WER
-            # print min_edit, ":", len(base_hashtag)
-            wer = min_edit / float(len(base_hashtag))
+            wer = float(min_edit) / float(len(base_hashtag))
             count += 1
             sum_ref += wer
     return sum_ref / count
