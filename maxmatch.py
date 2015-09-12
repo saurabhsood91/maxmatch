@@ -7,11 +7,6 @@
 
 from sys import argv
 
-def get_cost_sub(source_char, target_char):
-    if source_char == target_char:
-        return 0
-    return 2
-
 def MaxMatch(sentence, list_of_words):
     tokens = []
     
