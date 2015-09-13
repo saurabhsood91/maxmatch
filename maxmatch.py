@@ -6,6 +6,7 @@
 # Output: Tokenized array of words
 
 from sys import argv
+import argparse
 
 def MaxMatch(sentence, list_of_words):
     tokens = []
@@ -50,23 +51,17 @@ def PopulateListOfWords(filename):
 # TODO Command Line arguments handling
 
 if __name__ == "__main__":
-    filename = argv[1]
-    sentence = argv[2]
+    parser = argparse.ArgumentParser()
+    parser.add_argument("wordlist", help="Provides the lexicon")
+    parser.add_argument("sentence", help="Provides the sentence to be segmented")
+    args = parser.parse_args()
+    
+    filename = args.wordlist
+    sentence = args.sentence
     
     # Remove the hashtags and convert to lowercase
     sentence = sentence.strip('#').lower()
     
-    # This is actually useless at this point of time
-    if filename == "" or filename==None:
-        print "Filename missing"
-        print "Syntax: maxmatch filename 'sentence'"
-        exit()
-        
-    if sentence == "" or sentence == None:
-        print "Sentence missing"
-        print "Syntax: maxmatch filename 'sentence'"
-        exit()
-        
     # Get the list of words
     list_of_words = PopulateListOfWords(filename)
     

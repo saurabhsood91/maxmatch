@@ -1,5 +1,6 @@
 from sys import argv
 from maxmatch import *
+import argparse
 
 def GetSubCost(source, target):
     if source == target:
@@ -55,11 +56,20 @@ def ComputeAverageWER(output_file, ref_file):
 
 
 if __name__ == "__main__":
+    # Parse Arguments
+    parser = argparse.ArgumentParser()
+    parser.add_argument("hashtag_file", help="Provides the file containing hashtags")
+    parser.add_argument("wordlist_file", help="Provides the lexicon")
+    parser.add_argument("segment_output_file", help="Provides the file "\
+            "that contains segmented output")
+    parser.add_argument("reference_file", help="Provides the reference "\
+            "segmentation")
+    args = parser.parse_args()
     # Get name of file containing hashtags
-    hashtag_file = argv[1]
-    wordlist_file = argv[2]
-    output_file = argv[3]
-    ref_file = argv[4]
+    hashtag_file = args.hashtag_file
+    wordlist_file = args.wordlist_file
+    output_file = args.segment_output_file
+    ref_file = args.reference_file
 
     list_of_words = PopulateListOfWords(wordlist_file)
 
