@@ -1,6 +1,74 @@
 from sys import argv
-from maxmatch import *
 import argparse
+
+leftList = []
+rightList = []
+
+def GetLeftMatch(sentence, list_of_words):
+    for i in xrange(len(sentence), 0, -1):
+        if i == 1:
+            #print "Left Single: ", sentence[0]
+            return sentence[0]
+        if list_of_words.get(sentence[0:i]) != None:
+            #print "Left Match", sentence[0:i]
+            return sentence[0:i]
+
+def GetRightMatch(sentence, list_of_words):
+    for i in xrange(0, len(sentence)):
+        if i == len(sentence) - 1:
+            #print "Right Single: ", sentence[i]
+            return sentence[i]
+        if list_of_words.get(sentence[i:]) != None:
+            #print "Right Match", sentence[i:]
+            return sentence[i:]
+
+def MaxMatch(sentence, list_of_words):
+    #leftList = []
+    #rightList = []
+    global leftList
+    global rightList
+
+    if sentence == "":
+        return
+    
+    leftMatch = GetLeftMatch(sentence, list_of_words)
+    #print "Left Match: ", leftMatch
+    rightMatch = GetRightMatch(sentence, list_of_words)
+    #print "Right Match: ", rightMatch
+
+    if len(leftMatch) > len(rightMatch):
+        remaining = sentence[len(leftMatch):]
+        leftList.append(leftMatch)
+        MaxMatch(remaining, list_of_words)
+        #leftList.extend(MaxMatch(remaining, list_of_words))
+    else:
+        remaining = sentence[0:len(sentence) - len(rightMatch)]
+        rightList.append(rightMatch)
+        MaxMatch(remaining, list_of_words)
+        #rightList.extend(MaxMatch(remaining, list_of_words))
+        #rightList.reverse()
+    #return leftList.extend(rightList)
+def PopulateListOfWords(filename):
+    # This function creates a dict of words from input file
+    # Returns the dict
+
+    list_of_words = {}
+
+    # Read file line by line
+    with open(filename) as f:
+        for line in f:
+            # Get the word and frequency
+            split_line = line.rstrip().split()
+            word = split_line[0]
+            # TODO store frequency if needed
+            if list_of_words.get(word) == None:
+                # set in dict
+                list_of_words[word] = word
+    # return the list of files
+    return list_of_words
+
+# TODO Command Line arguments handling
+
 
 def GetSubCost(source, target):
     if source == target:
@@ -82,8 +150,18 @@ if __name__ == "__main__":
             hashtag = hashtag.strip('#').lower()
 
             # Call MaxMatch on the hashtag to get a set of tokens
-            list_of_tokens = MaxMatch(hashtag, list_of_words)
-            
+            MaxMatch(hashtag, list_of_words)
+            localLeftList = leftList
+            localRightList = rightList
+            #print localLeftList, localRightList
+            localRightList.reverse()
+            #print localRightList
+            localLeftList.extend(localRightList)
+            list_of_tokens = localLeftList
+            leftList = []
+            rightList = []
+            print list_of_tokens
+
             # Write the list of tokens to a file
             WriteTokens(output_file, list_of_tokens)
 
