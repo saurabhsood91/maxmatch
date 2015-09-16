@@ -1,0 +1,44 @@
+\documentclass{article}
+\begin{document}
+
+\begin{center}{\LARGE Assignment 1: Deterministic Segmentation}\end{center}
+\begin{center}{\normalsize Saurabh Sood}\end{center}
+
+
+\paragraph{Cause of Errors in MaxMatch algorithm} \hspace{0pt} \\
+\normalsize While running the MaxMatch algorithm on the test set of data and against the top 75000 words of the Google N-gram corpus, there were errors in segmentation. The primary causes of these errors were:
+\begin{itemize}
+\item There are multiple candidates for being matched, and we selected the one leading to a wrong segmentation
+\item Usage of words which are not there in the corpus
+\item There are words in other languages in the sentences
+\item Usage of shorthand in the hashtags (Eg: 'y' for 'why')
+\item Presence of numbers in the hashtags
+\end{itemize}
+
+\paragraph{Optimizations to MaxMatch} \hspace{0pt} \\
+\normalsize For optimizing the MaxMatch algorithm, I collaborated with Sachin Muralidhara. We noted that MaxMatch was trying to match the longest word going from Right to Left. However, it was often the case that the longest word that could be matched was from left to right. \\ \\
+For eg: Let's take the case of the word 'cuboulder'. \\
+Match going from Right to Left $\rightarrow$ cub \\
+Match going from Left to Right $\rightarrow$ boulder \\
+So, the longest word here is a match from Left to Right \\ \\
+
+The approach we followed here is as follows:
+\begin{itemize}
+\item Match the longest word going Right to Left
+\item Match longest word going Left to Right
+\item Compare the two matched words. Take the longest one as the matched token, and compute the remainder
+\item Repeat the steps for the remainder till the entire sentence is matched
+\end{itemize}
+
+\paragraph{Caveat} \hspace{0pt} \\
+\normalsize Now, as we are matching either from the left or from the right, there is a possiblity of getting the matched tokens out of order. To handle this, we used a combination of two lists (Left List, Right List)
+\begin{itemize}
+\item The Left List stores the words that are matched Left to Right
+\item The Right List stores the words that are matched Right to Left
+\item The tokens can be obtained in the right order by joining the Left List to the Reversed Right List.
+\end{itemize}
+
+\paragraph{Results} \hspace{0pt} \\
+The Measured WER without optimization on the test set was \textit{0.661224489796} \\
+The Measured WER with the optimization on the test set was \textit{0.369600340136}
+\end{document}
