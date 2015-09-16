@@ -4,6 +4,27 @@ import argparse
 leftList = []
 rightList = []
 
+def MaxMatchBase(sentence, list_of_words):
+    tokens = []
+    
+    if sentence == "":
+        return tokens
+    
+    for i in xrange(len(sentence), 0, -1):
+        if i == 1:
+            tokens.append(sentence[0])
+            rest = sentence[i:]
+            tokens.extend(MaxMatchBase(rest, list_of_words))
+            break
+        if list_of_words.get(sentence[0:i]) != None:
+            # Found in dict
+            tokens.append(sentence[0:i])
+            # Compute the rest
+            rest = sentence[i:]
+            tokens.extend(MaxMatchBase(rest, list_of_words))
+            break
+    return tokens
+
 def GetLeftMatch(sentence, list_of_words):
     for i in xrange(len(sentence), 0, -1):
         if i == 1:
@@ -132,12 +153,15 @@ if __name__ == "__main__":
             "that contains segmented output")
     parser.add_argument("reference_file", help="Provides the reference "\
             "segmentation")
+    parser.add_argument("optimize", nargs="?",
+        default="nooptimize", help="Run optimized maxmatch with optimize")
     args = parser.parse_args()
     # Get name of file containing hashtags
     hashtag_file = args.hashtag_file
     wordlist_file = args.wordlist_file
     output_file = args.segment_output_file
     ref_file = args.reference_file
+    is_optimized = args.optimize
 
     list_of_words = PopulateListOfWords(wordlist_file)
 
@@ -149,18 +173,22 @@ if __name__ == "__main__":
             # strip the hashtag and convert to lowercase
             hashtag = hashtag.strip('#').lower()
 
-            # Call MaxMatch on the hashtag to get a set of tokens
-            MaxMatch(hashtag, list_of_words)
-            localLeftList = leftList
-            localRightList = rightList
-            #print localLeftList, localRightList
-            localRightList.reverse()
-            #print localRightList
-            localLeftList.extend(localRightList)
-            list_of_tokens = localLeftList
-            leftList = []
-            rightList = []
-            print list_of_tokens
+            if is_optimized == "optimize":
+                # Call MaxMatch on the hashtag to get a set of tokens
+                MaxMatch(hashtag, list_of_words)
+                localLeftList = leftList
+                localRightList = rightList
+                #print localLeftList, localRightList
+                localRightList.reverse()
+                #print localRightList
+                localLeftList.extend(localRightList)
+                list_of_tokens = localLeftList
+                leftList = []
+                rightList = []
+                print list_of_tokens
+            else:
+                list_of_tokens = MaxMatchBase(hashtag, list_of_words);
+                print list_of_tokens
 
             # Write the list of tokens to a file
             WriteTokens(output_file, list_of_tokens)
